@@ -16,7 +16,6 @@ class Shop extends React.Component
         const {collections} = this.state;
         return (
             <div>
-                Shop
                 {
                     collections
                     .map(({id, ...otherCollectionProps}) => (
