@@ -1,7 +1,7 @@
 import React from 'react'
 import FormInput from '../form-input/form-input.component'
 import CustomButton from '../custom-button/custom-button.component'
-import {auth, createUserProfile} from '../../firebase/firebase.utils'
+import {auth, createUserProfileDocument} from '../../firebase/firebase.utils'
 
 import './signup.scss'
 
@@ -17,17 +17,18 @@ class Signup extends React.Component {
     }
 
     handleSubmit = async event => {
-        event.preventDefault()
+        event.preventDefault();
         const {displayName, email, password, confirmPassword } = this.state;
 
         if(password !== confirmPassword ) {
+            alert('password does not match')
             return ;
         }
 
         try {
             const {user} = await auth.createUserWithEmailAndPassword(email, password)
         
-            await createUserProfile(user, {displayName})
+            await createUserProfileDocument(user, {displayName})
 
             this.setState({
                 displayName:'',
@@ -35,14 +36,13 @@ class Signup extends React.Component {
                 password: '',
                 confirmPassword: ''
             })
-
-
         } catch (err) {
+            alert('User Already Exists');
             console.log(err.message);
         }
     }
 
-    handleSubmit = event => {
+    handleChange = event => {
         const {name, value} = event.target
         this.setState({[name]: value});
     }
@@ -57,10 +57,10 @@ class Signup extends React.Component {
             <form onSubmit={this.handleSubmit}>
                 <FormInput
                     type='text'
-                    name='name'
+                    name='displayName'
                     value={displayName}
                     onChange={this.handleChange}
-                    label='Name'
+                    label='Display Name'
                     required
                 />
                 <FormInput
@@ -81,7 +81,7 @@ class Signup extends React.Component {
                 />
                 <FormInput
                     type='password'
-                    name='confirm_password'
+                    name='confirmPassword'
                     value={confirmPassword}
                     onChange={this.handleChange}
                     label='Confirm Password'

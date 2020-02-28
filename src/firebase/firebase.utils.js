@@ -15,7 +15,7 @@ const config = {
 
 firebase.initializeApp(config);
 
-export const createUserProfile = async(userAuth, ...additionalData) => {
+export const createUserProfileDocument = async(userAuth, ...additionalData) => {
 
     if(!userAuth) return ;
 
@@ -35,7 +35,7 @@ export const createUserProfile = async(userAuth, ...additionalData) => {
             console.log(err.message);
         }
     }
-    console.log(snapshot);
+    return userRef;
 }
 
 export const auth = firebase.auth();
