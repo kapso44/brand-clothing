@@ -1,5 +1,5 @@
 import React from 'react';
-import {Route, Switch} from 'react-router-dom'
+import {Route, Switch, Redirect} from 'react-router-dom'
 import { connect } from 'react-redux'
 import './App.css';
 
@@ -21,7 +21,6 @@ class App extends React.Component {
 
       if(userAuth) {
         const userRef = await createUserProfileDocument(userAuth);
-        
 
         userRef.onSnapshot(snapshot => {
             setCurrentUser({
@@ -46,16 +45,26 @@ class App extends React.Component {
         <Header/>
         <Switch>
           <Route exact path='/' component={HomePage}/>
-          <Route exact path='/shop' component={Shop}/>
-          <Route exact path='/login' component={LoginRegister}/>
+          <Route path='/shop' component={Shop}/>
+          <Route exact path='/login' render={() =>
+            this.props.currentUser ? (
+              <Redirect to='/' />
+            ) : (
+              <LoginRegister/>
+            )
+          }/>
         </Switch>
       </div>
     );
   }
 }
 
+const mapStateToProps = ({user}) => ({
+  currentUser: user.currentUser
+})
+
 const mapDispatchToProps = dispatch => ({
   setCurrentUser: user => dispatch(setCurrentUser(user))
 })
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
